@@ -7,7 +7,6 @@ import {
   Badge,
   Dropdown,
   Modal,
-  Space,
   Typography,
   Tooltip,
 } from "antd";
@@ -20,16 +19,17 @@ import {
   SettingOutlined,
   LockOutlined,
   ThunderboltOutlined,
-  VideoCameraOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   HomeOutlined,
   WifiOutlined,
   BellOutlined,
   DownOutlined,
-  ArrowUpOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons";
+import { FiArrowDown, FiArrowDownCircle } from "react-icons/fi";
+import { FaAngleDown } from "react-icons/fa";
+import { getFromLocalStorage } from "../Config/auth";
 
 const { Text, Title } = Typography;
 const { Header, Sider, Content } = Layout;
@@ -89,13 +89,13 @@ const menuItems: MenuItem[] = [
         key: "profile",
         label: "Profile",
         icon: <DashboardOutlined />,
-        path: "/settings/profile",
+        path: "profile",
       },
       {
         key: "security",
         label: "Security",
         icon: <LockOutlined />,
-        path: "/settings/security",
+        path: "security",
       },
     ],
   },
@@ -200,6 +200,8 @@ const ProHeader = ({
   const [isPlanModalVisible, setIsPlanModalVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const router = useRouter();
+
   const handlePlanModalCancel = () => {
     setIsPlanModalVisible(false);
   };
@@ -277,6 +279,11 @@ const ProHeader = ({
     },
   ];
 
+  const getLoggedInUser = () => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+    return user;
+  };
+
   const onUpgrade = (planId: string) => {
     const selectedPlan = iotSubscriptionPlans.find(
       (plan) => plan.id === planId
@@ -286,6 +293,19 @@ const ProHeader = ({
       setIsModalVisible(true);
     }
   };
+
+  const loggedInUser = getLoggedInUser();
+
+  const logout = () => {
+    localStorage.removeItem("loggedInUser");
+    router.push("/login");
+  };
+
+  const handleGoToProfile = () => {
+    router.push("/dashboard/settings/profile");
+  };
+
+  const savedPlan = getFromLocalStorage("selectedPlan");
 
   return (
     <header className="!bg-white w-full p-4 shadow flex justify-between items-center">
@@ -297,41 +317,73 @@ const ProHeader = ({
         />
         <div className="flex items-center gap-2">
           <img src="/logo.png" alt="Logo" className="w-8 h-8" />
-          <h1 className="text-xl font-semibold text-blue-900">
+          <h1 className="text-xl font-semibold text-sky-600">
             Smart IoT Dashboard
           </h1>
         </div>
       </div>
-
       <div className="flex items-center gap-6">
         <SelectedPlanInHeader
-          selectedPlan={selectedPlan?.name || "Free Plan"}
+          selectedPlan={savedPlan + " Plan" || "Free Plan"}
           onShowPlanModal={() => {
             setIsPlanModalVisible(true);
             setIsModalVisible(true);
           }}
         />
-        <Badge count={notificationCount} className="cursor-pointer">
+        <Badge
+          count={notificationCount}
+          className="cursor-pointer"
+          onClick={() => {
+            router.push("/dashboard/alerts");
+          }}
+        >
           <BellOutlined className="text-gray-700 text-xl" />
         </Badge>
-
         <Dropdown
           menu={{
             items: [
-              { key: "profile", label: "Profile" },
-              { key: "logout", label: "Logout" },
+              //   link to profile, and change password
+              {
+                key: "profile",
+                label: (
+                  <div
+                    onClick={handleGoToProfile}
+                    className="flex items-center gap-2"
+                  >
+                    <SettingOutlined />
+                    Profile
+                  </div>
+                ),
+              },
+              {
+                key: "logout",
+                label: (
+                  <div
+                    onClick={logout}
+                    className="flex items-center gap-2 text-red-500"
+                  >
+                    <LockOutlined />
+                    Logout
+                  </div>
+                ),
+              },
             ],
           }}
           trigger={["click"]}
         >
           <div className="flex items-center gap-2 cursor-pointer">
             <img
-              src={avatarUrl}
+              src={
+                "https://res.cloudinary.com/nrob/image/upload/v1721084009/tip%20top%20consultancy/xorguxv2x1bwferxtkfo.webp"
+              }
               alt="avatar"
               className="w-8 h-8 rounded-full"
             />
-            <div className="text-left leading-tight">
-              <div className="text-gray-700 font-medium">{username}</div>
+            <div className="text-left flex items-center justify-center gap-2 leading-tight">
+              <div className="text-gray-700 font-medium">
+                {loggedInUser?.fullName.split(" ")[0] || "User"}
+              </div>
+              <FaAngleDown className="text-gray-500 text-sm" />
             </div>
             <DownOutlined className="text-black" />
           </div>
@@ -352,7 +404,7 @@ const ProHeader = ({
               key={plan.id}
               className={`border rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105 ${
                 selectedPlan?.id === plan.id
-                  ? "border-blue-500 bg-blue-50"
+                  ? "border-sky-500 bg-blue-50"
                   : "bg-white"
               }`}
               onClick={() => {
@@ -367,12 +419,11 @@ const ProHeader = ({
                   {plan.name} - ${plan.price.toFixed(2)} / month
                 </div>
                 {plan.isPopular && (
-                  <span className="px-4 py-1 text-xs bg-blue-500 text-white rounded-full uppercase font-semibold">
+                  <span className="px-4 py-1 text-xs bg-sky-500 text-white rounded-full uppercase font-semibold">
                     Popular
                   </span>
                 )}
               </div>
-
               <div className="text-sm text-gray-600 mb-6">
                 <div className="font-medium text-gray-800 mb-2">Features:</div>
                 <ul className="list-disc pl-5 space-y-1">
@@ -383,14 +434,13 @@ const ProHeader = ({
                   ))}
                 </ul>
               </div>
-
               <Button
                 type="primary"
                 onClick={() => onUpgrade(plan.id)}
                 block
                 className={`transition-all duration-200 ${
                   plan.isPopular
-                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    ? "bg-sky-600 text-white hover:bg-sky-700"
                     : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                 }`}
               >
@@ -411,14 +461,18 @@ const SelectedPlanInHeader = ({
   selectedPlan: string;
   onShowPlanModal: () => void;
 }) => {
+  const router = useRouter();
+
   return (
-    <div className="flex gap-4">
+    <div className="flex capitalize gap-4">
       <Tooltip title={`Current plan: ${selectedPlan}`}>
         <Button
           type="text"
-          onClick={onShowPlanModal}
+          onClick={() => {
+            router.push("/dashboard/subscription-plan");
+          }}
           icon={<InfoCircleOutlined />}
-          className="text-gray-600"
+          className="text-gray-600 capitalize"
         >
           {selectedPlan}
         </Button>

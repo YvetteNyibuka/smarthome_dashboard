@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import { getFromLocalStorage, saveToLocalStorage } from "@/app/Config/auth";
+import React, { useState, useEffect } from "react";
 
-const iotSubscriptionPlans = [
+// Subscription plans
+export const iotSubscriptionPlans = [
   {
-    id: "free",
+    id: "Free",
     name: "Free Plan",
-    price: 0,
+    price: 0, // RWF
     features: [
       "Basic Device Monitoring",
       "Mobile App Access",
@@ -16,9 +18,9 @@ const iotSubscriptionPlans = [
     isPopular: false,
   },
   {
-    id: "starter",
+    id: "Starter",
     name: "Starter Plan",
-    price: 9.99,
+    price: 13000, //
     features: [
       "Up to 10 Devices",
       "Energy Usage Insights",
@@ -28,9 +30,9 @@ const iotSubscriptionPlans = [
     isPopular: false,
   },
   {
-    id: "pro",
+    id: "Pro",
     name: "Pro Plan",
-    price: 19.99,
+    price: 26000, //
     features: [
       "Up to 25 Devices",
       "Advanced Automation Rules",
@@ -40,9 +42,9 @@ const iotSubscriptionPlans = [
     isPopular: true,
   },
   {
-    id: "family",
+    id: "Family",
     name: "Family Plan",
-    price: 29.99,
+    price: 39000, //
     features: [
       "Up to 50 Devices",
       "Family Profiles",
@@ -52,9 +54,9 @@ const iotSubscriptionPlans = [
     isPopular: false,
   },
   {
-    id: "enterprise",
+    id: "Enterprise",
     name: "Enterprise Plan",
-    price: 99.99,
+    price: 130000, // 99.99 * 1300 ≈ 129987 → rounded to 130,000 RWF
     features: [
       "Unlimited Devices",
       "Custom Automations",
@@ -66,19 +68,47 @@ const iotSubscriptionPlans = [
 ];
 
 const SubscriptionPlansPage: React.FC = () => {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>("free");
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedPlan = getFromLocalStorage("selectedPlan");
+    if (savedPlan) {
+      setSelectedPlan(savedPlan);
+    } else {
+      setSelectedPlan("free"); 
+    }
+  }, []);
 
   const handleSelectPlan = (id: string) => {
     setSelectedPlan(id);
+    saveToLocalStorage("selectedPlan", id);
   };
 
-  return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
-      <h2 className="text-3xl font-bold text-center mb-8">
-        Choose Your Subscription Plan
-      </h2>
+  const selectedPlanName = iotSubscriptionPlans.find(
+    (plan) => plan.id === selectedPlan
+  )?.name;
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  return (
+    <div className="max-w-6xl mx-auto py-10 px-4 bg-white p-4">
+      <div className="mb-12 flex w-full justify-between items-center">
+        <h2 className="text-2xl font-bold p-5 text-center text-gray-800">
+          Choose Your Subscription Plan
+        </h2>
+
+        {selectedPlan && (
+          <div className="mt-8 flex justify-center">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg px-6 py-4">
+              <h4 className="text-xl font-medium text-gray-700">
+                You have subscribed to the{" "}
+                <span className="ml-2 font-semibold text-sky-600">
+                  {selectedPlanName}
+                </span>
+              </h4>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-4">
         {iotSubscriptionPlans.map((plan) => (
           <SubscriptionPlanCard
             key={plan.id}
@@ -88,19 +118,11 @@ const SubscriptionPlansPage: React.FC = () => {
           />
         ))}
       </div>
-
-      {selectedPlan && (
-        <div className="mt-8 text-center">
-          <h4 className="text-xl font-semibold">
-            You have selected:{" "}
-            <span className="text-blue-500">{selectedPlan}</span>
-          </h4>
-        </div>
-      )}
     </div>
   );
 };
 
+// Plan Type
 interface SubscriptionPlan {
   id: string;
   name: string;
@@ -109,6 +131,7 @@ interface SubscriptionPlan {
   isPopular: boolean;
 }
 
+// Card Component
 interface SubscriptionPlanCardProps {
   plan: SubscriptionPlan;
   onSelect: (id: string) => void;
@@ -122,33 +145,38 @@ const SubscriptionPlanCard: React.FC<SubscriptionPlanCardProps> = ({
 }) => {
   return (
     <div
-      className={`p-6 border rounded-lg shadow-lg transition-transform transform hover:scale-105 ${
+      className={`p-6 justify-between flex flex-col border rounded-lg shadow-lg transition-transform transform hover:scale-105 ${
         plan.isPopular ? "bg-yellow-100" : "bg-white"
-      } ${isSelected ? "border-blue-500" : "border-gray-300"}`}
+      } ${isSelected ? "border-sky-500" : "border-gray-300"}`}
     >
-      <h3 className="text-xl font-semibold">{plan.name}</h3>
+      <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
       <p className="text-lg text-gray-700 mb-4">
-        ${plan.price.toFixed(2)} / month
+        {plan.price.toFixed(2)} RWF / month
       </p>
+
       <ul className="space-y-2 mb-4">
         {plan.features.map((feature, index) => (
           <li key={index} className="text-sm text-gray-600">
-            {feature}
+            • {feature}
           </li>
         ))}
       </ul>
+
       {plan.isPopular && (
-        <span className="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-          Popular
+        <span className="inline-block bg-red-500 text-white text-xs px-3 py-1 rounded-full mb-4">
+          Most Popular
         </span>
       )}
+
       <button
-        className={`w-full mt-4 py-2 text-white font-semibold rounded-lg ${
-          isSelected ? "bg-blue-500" : "bg-green-500"
-        }`}
         onClick={() => onSelect(plan.id)}
+        className={`w-full mt-4 py-2 font-semibold rounded-lg transition-colors ${
+          isSelected
+            ? "bg-sky-600 text-white"
+            : "bg-green-600 text-white hover:bg-green-600"
+        }`}
       >
-        {isSelected ? "Selected" : "Choose Plan"}
+        {isSelected ? "Current Subscribed" : "Upgrade to"}
       </button>
     </div>
   );

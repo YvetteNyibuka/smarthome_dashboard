@@ -1,5 +1,6 @@
 "use client";
 import Devices from "@/Components/Alerts/AlertComp";
+import PageWithSubscription from "@/Components/Subscription/PageHeader";
 import React, { useState } from "react";
 
 // Sample alert data with more realistic alerts
@@ -73,10 +74,8 @@ const AlertsNotificationPagePage = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-r bg-white rounded-xl shadow-xl">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-6 flex items-center">
-        <span className="mr-2 text-blue-600">🔔</span> Alerts & Notifications
-      </h2>
+    <div className="max-w-6xl mx-auto p-6 pt-2 bg-gradient-to-r bg-white rounded-xl shadow-xl">
+      <PageWithSubscription title="🔔 Alerts & Notifications" />
 
       {/* Alerts Section */}
       <div className="space-y-4">
@@ -111,14 +110,14 @@ const AlertsNotificationPagePage = () => {
                 {!alert.read && (
                   <button
                     onClick={() => handleMarkAsRead(alert.id)}
-                    className="px-4 py-2 text-white bg-blue-600 rounded-md text-sm"
+                    className="px-4 py-2 text-white bg-sky-600 rounded-md text-sm"
                   >
                     Mark as Read
                   </button>
                 )}
                 <button
                   onClick={() => handleDismissAlert(alert.id)}
-                  className="px-4 py-2 text-white bg-red-600 rounded-md text-sm"
+                  className="px-4 py-2 text-white bg-red-700 rounded-md text-sm"
                 >
                   Dismiss
                 </button>
