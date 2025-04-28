@@ -1,10 +1,11 @@
 import Home from "@/Components/Home/Home";
+import MainDashboard from "@/Components/Main/MainDashboard";
 import React from "react";
 
 const HomePage = () => {
   return (
     <div>
-      <Home />
+      <MainDashboard />
     </div>
   );
 };

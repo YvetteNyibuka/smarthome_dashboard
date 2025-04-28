@@ -1,85 +1,139 @@
 "use client";
 
-import React, { useState } from "react";
-import { Switch } from "antd"; // We will use Ant Design's Switch component for toggles
+import React, { useEffect, useState } from "react";
+import { Switch } from "antd";
+import PageWithSubscription from "@/Components/Subscription/PageHeader";
 
-// Example automation devices for illustration
-const initialDevices = [
-  { id: 1, name: "Living Room Light", status: false },
-  { id: 2, name: "Smart Thermostat", status: true },
-  { id: 3, name: "Bedroom Fan", status: false },
-  { id: 4, name: "Kitchen Light", status: true },
-  { id: 5, name: "Smart Door Lock", status: true },
-  { id: 6, name: "Garage Door", status: false },
+// Helper functions for localStorage
+const LOCAL_STORAGE_KEY = "automationDevices";
+
+const saveDevicesToLocalStorage = (devices: Device[]) => {
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(devices));
+};
+
+const loadDevicesFromLocalStorage = (): Device[] => {
+  if (typeof window !== "undefined") {
+    const storedDevices = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return storedDevices ? JSON.parse(storedDevices) : initialDevices;
+  }
+  return initialDevices;
+};
+
+// Device Type
+type Device = {
+  id: number;
+  name: string;
+  status: boolean;
+  lastUpdated: string;
+};
+
+// Initial devices (without timestamp)
+const initialDevices: Device[] = [
+  {
+    id: 1,
+    name: "Living Room Light",
+    status: false,
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: 2,
+    name: "Smart Thermostat",
+    status: true,
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: 3,
+    name: "Bedroom Fan",
+    status: false,
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: 4,
+    name: "Kitchen Light",
+    status: true,
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: 5,
+    name: "Smart Door Lock",
+    status: true,
+    lastUpdated: new Date().toISOString(),
+  },
+  {
+    id: 6,
+    name: "Garage Door",
+    status: false,
+    lastUpdated: new Date().toISOString(),
+  },
 ];
 
 const AutomationPage = () => {
-  const [devices, setDevices] = useState(initialDevices);
+  const [devices, setDevices] = useState<Device[]>([]);
 
-  // Toggle device status function
+  useEffect(() => {
+    const loadedDevices = loadDevicesFromLocalStorage();
+    setDevices(loadedDevices);
+  }, []);
+
   const toggleDeviceStatus = (id: number) => {
-    setDevices((prevDevices) =>
-      prevDevices.map((device) =>
-        device.id === id ? { ...device, status: !device.status } : device
-      )
+    const updatedDevices = devices.map((device) =>
+      device.id === id
+        ? {
+            ...device,
+            status: !device.status,
+            lastUpdated: new Date().toISOString(),
+          }
+        : device
     );
+    setDevices(updatedDevices);
+    saveDevicesToLocalStorage(updatedDevices);
   };
 
   return (
-    <div className="container mx-auto p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text- text-gray-800 mb-8">
-        Automation Management
-      </h1>
+    <div className="container mx-auto px-6 py-10 min-h-screen bg-gradient-to-tr from-gray-50 to-white">
+      <PageWithSubscription title="Automation Control" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {devices.map((device) => (
           <div
             key={device.id}
-            className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center"
+            className="bg-white p-8 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center border border-gray-200"
           >
-            <h3 className="text-xl font-semibold text-gray-700 mb-4">
+            <h3 className="text-2xl font-bold text-gray-800 mb-3">
               {device.name}
             </h3>
 
-            <div className="mb-4">
-              <span
-                className={`text-lg ${
-                  device.status ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {device.status ? "Active" : "Inactive"}
-              </span>
-            </div>
+            <p
+              className={`text-base mb-6 font-medium ${
+                device.status ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {device.status ? "Active" : "Inactive"}
+            </p>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center gap-4">
               <Switch
                 checked={device.status}
                 onChange={() => toggleDeviceStatus(device.id)}
-                className={`${device.status ? "bg-green-400" : "bg-red-400"}`}
+                className="scale-125"
               />
-              <span
-                className={`${
-                  device.status ? "text-green-500" : "text-red-500"
+              <button
+                onClick={() => toggleDeviceStatus(device.id)}
+                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-md ${
+                  device.status
+                    ? "bg-red-500 hover:bg-red-600 text-white"
+                    : "bg-green-500 hover:bg-green-600 text-white"
                 }`}
               >
                 {device.status ? "Turn Off" : "Turn On"}
-              </span>
+              </button>
+            </div>
+
+            <div className="mt-6 text-xs text-gray-400">
+              Last updated: {new Date(device.lastUpdated).toLocaleString()}
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="mt-8 bg-white p-6 rounded-lg shadow-lg">
-        <h3 className="text-2xl font-semibold text-gray-800">
-          Subscription Information
-        </h3>
-        <p className="text-gray-600 mt-2">
-          Your current subscription plan: <strong>Premium</strong>
-        </p>
-        <p className="text-gray-600 mt-2">
-          Unlock all features and enjoy full control over your devices with the
-          Premium subscription.
-        </p>
       </div>
     </div>
   );
