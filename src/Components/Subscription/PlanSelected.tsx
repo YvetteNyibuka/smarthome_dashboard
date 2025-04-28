@@ -1,12 +1,12 @@
 import { getFromLocalStorage } from "@/app/Config/auth";
-import { iotSubscriptionPlans } from "@/app/dashboard/subscription-plan/page";
+import { iotSubscriptionPlans } from "@/app/Config/data";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const CurrentSubscriptionCard: React.FC = () => {
   const savedPlanId = getFromLocalStorage("selectedPlan");
   const currentPlan = iotSubscriptionPlans.find(
-    (plan) => plan.id === savedPlanId
+    (plan: any) => plan.id === savedPlanId
   );
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -88,7 +88,7 @@ const CurrentSubscriptionCard: React.FC = () => {
               Included Features:
             </h5>
             <ul className="list-disc list-inside text-gray-600 text-sm space-y-1">
-              {currentPlan.features.map((feature, index) => (
+              {currentPlan.features.map((feature: any, index: any) => (
                 <li key={index} className="flex items-center">
                   <span className="mr-2 text-green-500">✓</span>
                   {feature}
