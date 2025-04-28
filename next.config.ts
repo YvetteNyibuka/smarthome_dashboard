@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const withNextIntl = require("next-intl/plugin")();
+// const withNextIntl = require("next-intl/plugin")();
 const withAntdLess = require("next-plugin-antd-less");
 const nextConfig = withNextIntl(
   withAntdLess({
@@ -29,3 +29,7 @@ const nextConfig = withNextIntl(
 );
 
 module.exports = nextConfig;
+function withNextIntl(arg0: any) {
+  throw new Error("Function not implemented.");
+}
+
