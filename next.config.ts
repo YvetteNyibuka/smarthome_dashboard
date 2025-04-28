@@ -14,7 +14,7 @@ const nextConfig = withNextIntl(
       forceSwcTransforms: true,
       missingSuspenseWithCSRBailout: false,
     },
-    webpack: (config) => {
+    webpack: (config: { resolve: any; }) => {
       config.resolve = {
         ...config.resolve,
         fallback: {
