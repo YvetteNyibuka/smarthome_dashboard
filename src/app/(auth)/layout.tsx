@@ -6,12 +6,11 @@ import { Card, Typography } from "antd";
 
 const { Title } = Typography;
 
-interface AuthLayoutProps {
-  title: string;
+const AuthLayout: React.FC<any> = ({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-const AuthLayout: React.FC<AuthLayoutProps> = ({ title, children }) => {
+}) => {
   return (
     <div
       className="flex min-h-screen items-center justify-center p-4 bg-cover bg-center"

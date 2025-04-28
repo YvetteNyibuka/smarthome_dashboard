@@ -39,6 +39,7 @@ const Devices = () => {
   // Load devices and subscription from localStorage
   useEffect(() => {
     try {
+    if (typeof window === "undefined") return;
       const storedDevices = localStorage.getItem(STORAGE_KEY);
       const storedSubscription = localStorage.getItem(SUBSCRIPTION_KEY);
 
@@ -53,6 +54,7 @@ const Devices = () => {
   // Save devices to localStorage whenever they change
   useEffect(() => {
     if (devices.length > 0) {
+    if (typeof window === "undefined") return;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(devices));
     }
   }, [devices]);

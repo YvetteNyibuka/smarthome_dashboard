@@ -34,8 +34,6 @@ const RegisterPage = () => {
     return users.some((user: { email: string }) => user.email === email);
   };
 
-  
-
   const saveUserToLocalStorage = (user: {
     email: string;
     password: string;
@@ -44,6 +42,7 @@ const RegisterPage = () => {
     // Add the new user to the array
     users.push(user);
     // Save the updated array back to localStorage
+    if (typeof window === "undefined") return;
     localStorage.setItem("users", JSON.stringify(users));
   };
   const onSubmit = (values: any) => {

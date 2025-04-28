@@ -280,6 +280,7 @@ const ProHeader = ({
   ];
 
   const getLoggedInUser = () => {
+    if (typeof window === "undefined") return;
     const user = JSON.parse(localStorage.getItem("loggedInUser") || "null");
     return user;
   };
@@ -297,6 +298,7 @@ const ProHeader = ({
   const loggedInUser = getLoggedInUser();
 
   const logout = () => {
+    if (typeof window === "undefined") return
     localStorage.removeItem("loggedInUser");
     router.push("/login");
   };

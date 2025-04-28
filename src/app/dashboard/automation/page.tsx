@@ -8,6 +8,7 @@ import PageWithSubscription from "@/Components/Subscription/PageHeader";
 const LOCAL_STORAGE_KEY = "automationDevices";
 
 const saveDevicesToLocalStorage = (devices: Device[]) => {
+    if (typeof window === "undefined") return;
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(devices));
 };
 
