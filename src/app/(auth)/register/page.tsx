@@ -7,7 +7,6 @@ import * as Yup from "yup";
 import { Input, Button, Typography } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import AuthLayout from "../layout";
 import { saveToLocalStorage } from "@/app/Config/auth";
 import { Notify } from "notiflix";
 
