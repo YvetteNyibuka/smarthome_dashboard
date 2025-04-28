@@ -13,6 +13,7 @@
     "formik": "^2.4.6",
     "next": "15.2.2",
     "next-intl": "^4.1.0",
+    "next-plugin-antd-less": "^1.8.0",
     "notiflix": "^3.2.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
