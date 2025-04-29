@@ -1,7 +1,6 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  // Removed invalid 'font' property
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
     "node_modules/antd/dist/antd.min.css",
@@ -9,9 +8,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg_primary: " #106BB9",
-        text_color: " #1E1E1E",
-        secondary: "#6ACFF5",
+        main: "#2793D0",
+        cycle: "#BA0C2F",
       },
     },
   },
