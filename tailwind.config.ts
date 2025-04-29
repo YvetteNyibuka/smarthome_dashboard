@@ -1,24 +1,19 @@
 import type { Config } from "tailwindcss";
 
-const config: Config = {
+export default {
+  // Removed invalid 'font' property
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "node_modules/antd/dist/antd.min.css",
   ],
   theme: {
     extend: {
       colors: {
-        main: "#2793D0",
-        cycle: "#BA0C2F",
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        bg_primary: " #106BB9",
+        text_color: " #1E1E1E",
+        secondary: "#6ACFF5",
       },
     },
   },
   plugins: [],
-};
-export default config;
+} satisfies Config;
