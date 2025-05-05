@@ -18,8 +18,8 @@ const MainDashboard: React.FC = () => {
     totalDevices: 0,
     activeDevices: 0,
     totalAlerts: 0,
-    energyConsumption: "-- kWh",
-    automationStatus: "0%",
+    energyConsumption: "350 kWh",
+    automationStatus: "20%",
     deviceHealth: "Good",
     systemUptime: "24 days",
     networkStatus: "Stable",
@@ -81,7 +81,7 @@ const MainDashboard: React.FC = () => {
               Total Devices
             </h4>
             <p className="text-4xl font-bold text-gray-900">
-              {dashboardData.totalDevices || 5}
+              {dashboardData.totalDevices || 6}
             </p>
           </div>
         </div>
@@ -96,7 +96,7 @@ const MainDashboard: React.FC = () => {
               Active Devices
             </h4>
             <p className="text-4xl font-bold text-gray-900">
-              {dashboardData.activeDevices || 6}
+              {dashboardData.activeDevices || 4}
             </p>
           </div>
         </div>
@@ -111,7 +111,7 @@ const MainDashboard: React.FC = () => {
               Total Alerts
             </h4>
             <p className="text-4xl font-bold text-gray-900">
-              {dashboardData.totalAlerts || 9}
+              {dashboardData.totalAlerts || 6}
             </p>
           </div>
         </div>
@@ -126,7 +126,7 @@ const MainDashboard: React.FC = () => {
           <div className="flex items-center space-x-4">
             <LineChartOutlined className="text-3xl text-sky-500" />
             <p className="text-4xl font-bold text-gray-900">
-              {dashboardData.energyConsumption || "120 kWh"}
+              {dashboardData.energyConsumption || "350 kWh"}
             </p>
           </div>
         </div>
