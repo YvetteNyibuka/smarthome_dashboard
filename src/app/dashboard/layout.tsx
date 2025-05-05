@@ -30,6 +30,7 @@ import {
 import { FiArrowDown, FiArrowDownCircle } from "react-icons/fi";
 import { FaAngleDown } from "react-icons/fa";
 import { getFromLocalStorage } from "../Config/auth";
+import { PiUsersFourFill } from "react-icons/pi";
 
 const { Text, Title } = Typography;
 const { Header, Sider, Content } = Layout;
@@ -80,6 +81,18 @@ const menuItems: MenuItem[] = [
     path: "/dashboard/subscription-plan",
   },
   {
+    key: "subscribers",
+    label: "Subscribers",
+    icon: <LockOutlined />,
+    path: "/dashboard/subscribers",
+  },
+  {
+    key: "users",
+    label: "Management Users",
+    icon: <PiUsersFourFill />,
+    path: "/dashboard/users",
+  },
+  {
     key: "settings",
     label: "Settings",
     icon: <SettingOutlined />,
@@ -102,6 +115,13 @@ const menuItems: MenuItem[] = [
 ];
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
+    const getLoggedInUser = () => {
+      if (typeof window === "undefined") return;
+      const user = JSON.parse(localStorage.getItem("loggedInUser") || "null");
+      return user;
+    };
+
+  const loggedInUser = getLoggedInUser();
   const router = useRouter();
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
@@ -298,7 +318,7 @@ const ProHeader = ({
   const loggedInUser = getLoggedInUser();
 
   const logout = () => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") return;
     localStorage.removeItem("loggedInUser");
     router.push("/login");
   };
